@@ -10,12 +10,16 @@ body {
     font-family: "Roboto", serif;
     background-color: #FFC6C6;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
 }
 
 .card-wrapper {
     perspective: 1000px;
     transform: rotate(-90deg);
-    transition: transform 1000ms ease;
+    transition: transform 1200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card {
@@ -25,16 +29,41 @@ body {
     border: 1px solid;
     transform-style: preserve-3d;
     will-change: transform;
-    transition: transform 250ms ease;
+    transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1), width 600ms cubic-bezier(0.4, 0, 0.2, 1), height 600ms cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: inset 5px 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Step 2: Rotar la carta cuando se saca del sobre */
 .envelope.step-2 .card {
     transform: rotateY(-15deg);
 }
 
-/* Card cover styling */
+.envelope.step-4-expanded .card-wrapper {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(0deg) !important;
+    z-index: 100;
+}
+
+.envelope.step-4-expanded .card {
+    width: 320px;
+    height: 500px;
+    transform: rotateY(-15deg) scale(1.1);
+}
+
+.envelope.step-4-expanded .card-body {
+    padding: 28px;
+}
+
+.envelope.step-4-expanded .card-body p {
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.envelope.step-4-expanded .card-body p+p {
+    margin-top: 16px;
+}
+
 .card-cover {
     position: absolute;
     inset: 0;
@@ -42,10 +71,9 @@ body {
     outline: 1px solid #000;
     transform-style: preserve-3d;
     transform-origin: left;
-    transition: transform 500ms ease;
+    transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Step 3: Abrir la portada de la carta */
 .envelope.step-3 .card-cover {
     transform: rotateY(-135deg);
 }
@@ -59,8 +87,9 @@ body {
     place-items: center;
 }
 
+/* PORTADA IZQUIERDA - SOLO BLANCO, SIN IMAGEN */
 .card-side-secondary {
-    background-color: #fff;
+    background-color: #fff !important;
     transform: rotateY(180deg);
     box-shadow: inset -5px 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -95,21 +124,28 @@ body {
     font-size: 8px;
 }
 
-/* Card body styling */
 .card-body {
     font-family: "Shantell Sans", serif;
     padding: 14px;
+    transition: padding 600ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card-body p {
     font-size: 10px;
     font-weight: 300;
-}
-.card-body p+p {
-    margin-top: 10px;
+    transition: font-size 600ms cubic-bezier(0.4, 0, 0.2, 1), line-height 600ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Envelope styling */
+.card-body p.typewriter-line {
+    opacity: 1;
+    min-height: 1em;
+}
+
+.card-body p+p {
+    margin-top: 10px;
+    transition: margin-top 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .envelope {
     width: 300px;
     height: 200px;
@@ -137,30 +173,44 @@ body {
     pointer-events: none;
 }
 
-/* Step 2: Animación para sacar la carta del sobre */
 .envelope.step-2 .card-wrapper {
-    animation: show-card 1000ms forwards;
+    animation: show-card 1200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Animación para cerrar (cuando no está en step-2) */
 .envelope:not(.step-2) .card-wrapper {
-    transform: rotate(-90deg);
+    animation: hide-card 1300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Keyframes */
 @keyframes show-card {
+    0% {
+        transform: rotate(-90deg);
+        z-index: -1;
+    }
     50% {
         transform: translateY(-75%) rotate(-90deg);
         z-index: -1;
     }
-
     100% {
         transform: translateY(0) rotate(0deg);
         z-index: 10;
     }
 }
 
-/* Card lid styling */
+@keyframes hide-card {
+    0% {
+        z-index: 10;
+        transform: translateY(0) rotate(0deg);
+    }
+    40% {
+        transform: translateY(-75%) rotate(-45deg);
+        z-index: -1;
+    }
+    100% {
+        transform: translateY(0) rotate(-90deg);
+        z-index: -1;
+    }
+}
+
 .envelope-lid {
     position: absolute;
     inset: 0;
@@ -192,18 +242,16 @@ body {
 .envelope-lid-secondary {
     background-color: #fff;
     clip-path: polygon(50% 38%, 0 0, 100% 0);
-    transition: transform 500ms ease;
+    transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: top;
     z-index: 1;
 }
 
-/* Step 1: Abrir la tapa del sobre */
 .envelope.step-1 .envelope-lid-secondary {
     transform: rotateX(180deg);
     z-index: -1;
 }
 
-/* Heart Seal */
 .heart-seal {
     position: absolute;
     top: 37%;
@@ -213,7 +261,7 @@ body {
     height: 40px; 
     z-index: 2;
     opacity: 1;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease;
     pointer-events: none;
     display: flex;
     align-items: center;
@@ -239,55 +287,182 @@ body {
     }
 }
 
-/* Responsive para móviles */
+.envelope-recipient {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: "Petemoss", cursive;
+    font-size: 22px;
+    color: #8B4513;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    letter-spacing: 1px;
+}
+
+/* RESPONSIVE */
 @media (max-width: 768px) {
     .envelope {
-        width: 280px;
-        height: 187px;
+        width: 480px;
+        height: 320px;
+    }
+    
+    .envelope::after {
+        border-top: 120px solid transparent;
+        border-right: 240px solid white;
+        border-bottom: 200px solid white;
+        border-left: 240px solid white;
     }
     
     .card {
-        width: 168px;
-        height: 261px;
+        width: 288px;
+        height: 448px;
+    }
+    
+    .envelope.step-4-expanded .card {
+        width: 440px;
+        height: 700px;
+    }
+    
+    .envelope.step-4-expanded .card-wrapper {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(0deg) !important;
+    }
+    
+    .envelope.step-4-expanded .card-body {
+        padding: 36px;
+    }
+    
+    .envelope.step-4-expanded .card-body p {
+        font-size: 18px;
+        line-height: 1.7;
+    }
+    
+    .card-title-secondary {
+        font-size: 26px;
     }
     
     .card-title-main {
-        font-size: 56px;
+        font-size: 102px;
+    }
+    
+    .card-title-apostrophe {
+        top: 54px;
+        right: 13px;
+        font-size: 13px;
     }
     
     .card-body {
-        padding: 12px;
+        padding: 22px;
     }
     
     .card-body p {
-        font-size: 9px;
+        font-size: 16px;
+    }
+    
+    .card-body p+p {
+        margin-top: 16px;
+    }
+    
+    .heart-seal {
+        font-size: 52px;
+        width: 64px;
+        height: 64px;
+    }
+    
+    .envelope-recipient {
+        font-size: 35px;
+        bottom: 24px;
+    }
+    
+    .envelope-lid::before,
+    .envelope-lid::after {
+        height: calc(100% - 50.96px);
     }
 }
 
 @media (max-width: 480px) {
     .envelope {
-        width: 240px;
-        height: 160px;
+        width: 420px;
+        height: 280px;
+    }
+    
+    .envelope::after {
+        border-top: 105px solid transparent;
+        border-right: 210px solid white;
+        border-bottom: 175px solid white;
+        border-left: 210px solid white;
     }
     
     .card {
-        width: 144px;
-        height: 224px;
+        width: 252px;
+        height: 392px;
+    }
+    
+    .envelope.step-4-expanded .card {
+        width: 380px;
+        height: 600px;
+    }
+    
+    .envelope.step-4-expanded .card-wrapper {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(0deg) !important;
+    }
+    
+    .envelope.step-4-expanded .card-body {
+        padding: 32px;
+    }
+    
+    .envelope.step-4-expanded .card-body p {
+        font-size: 16px;
     }
     
     .card-title-secondary {
-        font-size: 14px;
+        font-size: 22px;
     }
     
     .card-title-main {
-        font-size: 48px;
+        font-size: 90px;
+    }
+    
+    .card-title-apostrophe {
+        top: 48px;
+        right: 11px;
+        font-size: 11px;
     }
     
     .card-body {
-        padding: 10px;
+        padding: 19px;
     }
     
     .card-body p {
-        font-size: 8px;
+        font-size: 14px;
+    }
+    
+    .card-body p+p {
+        margin-top: 14px;
+    }
+    
+    .heart-seal {
+        font-size: 48px;
+        width: 58px;
+        height: 58px;
+    }
+    
+    .envelope-recipient {
+        font-size: 30px;
+        bottom: 21px;
+    }
+    
+    .envelope-lid::before,
+    .envelope-lid::after {
+        height: calc(100% - 44.59px);
     }
 }
