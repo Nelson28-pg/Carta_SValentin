@@ -209,15 +209,34 @@ body {
     top: 37%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 36px;
-    height: 32px; 
-    background-image: url("heart-seal.png");
-    background-size: cover; 
-    background-repeat: no-repeat;
+    width: 40px;
+    height: 40px; 
     z-index: 2;
     opacity: 1;
     transition: opacity 0.3s ease;
     pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.heart-seal::before {
+    content: "❤️";
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.1);
+    }
+    50% {
+        transform: scale(1);
+    }
 }
 
 /* Responsive para móviles */
